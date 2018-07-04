@@ -6,8 +6,8 @@ import torch.nn.functional as F
 from torch.autograd import Variable
 import numpy as np
 import cv2 
-from util import count_parameters as count
-from util import convert2cpu as cpu
+from src.util import count_parameters as count
+from src.util import convert2cpu as cpu
 from PIL import Image, ImageDraw
 
 
