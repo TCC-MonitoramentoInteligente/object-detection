@@ -11,6 +11,10 @@ The detector is [A PyTorch implementation of a YOLO v3 Object Detector](https://
 4. Install requirements `$ pip install -r requirements.txt`;
 5. Download YOLO pre-trained weight file `$ wget https://pjreddie.com/media/files/yolov3.weights`.
 
+## Testing
+There is a simple script to test if the detector is working.
+Run `$ python3 detector_test.py --image /path/to/image`. You should see a list with all the detected objects, represented by the model/Object class.
+
 ## Usage
 ```
 from detector import Detector

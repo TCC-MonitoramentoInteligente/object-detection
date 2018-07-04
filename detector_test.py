@@ -26,6 +26,7 @@ def main():
         detector = Detector()
         detector.load_model()
         object_list = detector.detect(frame=img)
+        print()
         for obj in object_list:
             print(obj.to_string())
 
