@@ -9,7 +9,7 @@ The detector is [A PyTorch implementation of a YOLO v3 Object Detector](https://
 2. Create virtualenv `$ virtualenv --system-site-packages -p python3 venv`;
 3. Activate virtualenv `$ source venv/bin/activate`;
 4. Install requirements `$ pip install -r requirements.txt`;
-5. Download YOLO pre-trained weight file `$ wget https://pjreddie.com/media/files/yolov3.weights`.
+5. Download YOLO pre-trained weight file `$ wget https://pjreddie.com/media/files/yolov3.weights -P /weights`.
 
 ## Testing
 There is a simple script to test if the detector is working.
