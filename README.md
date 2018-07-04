@@ -1,6 +1,6 @@
-# Object detecton module
+# Object detection module
 
-[NOTE]: Future updates will change this module to a independent service. Now, it is a Python interface, and after, will become a REST API.
+[NOTE]: Future updates will change this module to an independent service. Now, it is a Python interface, and after, will become a REST API.
 
 The detector is [A PyTorch implementation of a YOLO v3 Object Detector](https://github.com/ayooshkathuria/pytorch-yolo-v3). This module is a Python interface to the YOLO model.
 
@@ -22,7 +22,7 @@ detector.load_model()
 
 object_list = detector.detect(frame)
 ```
-The `Detector.detetc` function returns a list of `Object` containing all objects detected by the model
+The `Detector.detect` function returns a list of `Object` containing all objects detected by the model
 ```
 class Object:
     """
