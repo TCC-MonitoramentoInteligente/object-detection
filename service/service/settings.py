@@ -73,12 +73,7 @@ WSGI_APPLICATION = 'service.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/2.0/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-    }
-}
+DATABASES = {}
 
 
 # Password validation
@@ -118,3 +113,6 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.0/howto/static-files/
 
 STATIC_URL = '/static/'
+
+# http://www.librador.com/2011/05/23/How-to-run-Django-tests-without-a-database/
+TEST_RUNNER = 'testing.DatabaselessTestRunner'
