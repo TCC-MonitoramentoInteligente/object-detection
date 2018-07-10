@@ -134,6 +134,9 @@ class Detector:
         obj.label = "{0}".format(self._classes[cls])
         return obj
 
+    def is_ready(self):
+        return self._model is not None
+
     def detect(self, frame):
         """
         Use yolov3 model to detect objects

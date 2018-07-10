@@ -20,7 +20,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/2.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '!%i7n+sb==hqgszq_$g35jv2#463z&892!^n#39&#%#(1er_9g'
+SECRET_KEY = 'h!)*yzbts$v75d80oy@=%q-$bs*6fio2$6$2#!4)au601v(1(a'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'detector_app.apps.DetectorAppConfig',
 ]
 
 MIDDLEWARE = [
@@ -113,6 +114,3 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.0/howto/static-files/
 
 STATIC_URL = '/static/'
-
-# http://www.librador.com/2011/05/23/How-to-run-Django-tests-without-a-database/
-TEST_RUNNER = 'testing.DatabaselessTestRunner'
