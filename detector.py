@@ -34,9 +34,6 @@ class Detector:
     _num_classes = 80
     _classes = None
 
-    def __del__(self):
-        torch.cuda.empty_cache()
-
     def set_dataset(self, dataset: str):
         """
         :param dataset: Dataset on which the network has been trained
