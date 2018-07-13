@@ -26,3 +26,13 @@ class Object:
                self.height == other.height and \
                self.label == other.label and \
                self.score == other.score
+
+    def __dict__(self):
+        return {
+            'x': self.x,
+            'y': self.y,
+            'width': self.width,
+            'height': self.height,
+            'label': self.label,
+            'score': self.score,
+        }

@@ -1,4 +1,6 @@
 import ast
+import base64
+import json
 
 import numpy as np
 
@@ -11,18 +13,15 @@ from .models import detector
 @csrf_exempt
 def detect(request):
     if request.method == 'POST':
-        # if detector.is_ready():
-        #     data = request.data
-        #     print(data)
-        #     return HttpResponse(status=200)
-        # else:
-        #     return HttpResponse("Detector module is not ready", status=500)
-        # img = np.fromstring(request.POST['image'], dtype=np.float32)
-
-        shape = ast.literal_eval(request.POST.get('shape'))
-        img_bytes = request.POST.get('image')
-        print(img_bytes)
-        print(len(img_bytes))
-        # Here we reconstruct the image
-        # img = np.fromstring(img_bytes, dtype=np.uint8).reshape(shape)
-        return JsonResponse({'image': 'Hello', 'shape': shape})
+        if detector.is_ready():
+            shape = ast.literal_eval(request.POST.get('shape'))
+            buffer = base64.b64decode(request.POST.get('image'))
+            # Reconstruct the image
+            img = np.frombuffer(buffer, dtype=np.uint8).reshape(shape)
+            object_list = detector.detect(img)
+            for obj in object_list:
+                print(obj.to_string())
+            json_string = json.dumps([obj.__dict__() for obj in object_list])
+            return JsonResponse({'object_list': json_string})
+        else:
+            return HttpResponse("Detector module is not ready", status=500)
