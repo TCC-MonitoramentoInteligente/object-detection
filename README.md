@@ -1,6 +1,6 @@
 # Object detection service
 
-The detector is [A PyTorch implementation of a YOLO v3 Object Detector](https://github.com/ayooshkathuria/pytorch-yolo-v3). This serive is a REST API interface to the YOLO model.
+The detector is [A PyTorch implementation of a YOLO v3 Object Detector](https://github.com/ayooshkathuria/pytorch-yolo-v3). This service is a REST API interface to the YOLO model.
 
 ## Setup
 1. Install Nvidia CUDA-9.0, following this [tutorial](https://yangcha.github.io/CUDA90/);
