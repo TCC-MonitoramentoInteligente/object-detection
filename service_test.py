@@ -8,6 +8,7 @@ from urllib.request import Request, urlopen
 import cv2
 
 service_url = 'http://localhost:8000/detect/'
+window = 'object-detection'
 
 
 def arg_parse():
@@ -45,13 +46,44 @@ def draw_box(frame, obj, color_bgr=(0, 255, 0), thickness=2):
 
 
 def video(video_file):
-    pass
+    cap = cv2.VideoCapture(video_file)
+
+    cv2.namedWindow(window, cv2.WINDOW_NORMAL)
+    cv2.resizeWindow(window, 600, 600)
+
+    while cap.isOpened():
+        ret, frame = cap.read()
+
+        if frame is None:
+            break
+
+        start = time.time()
+        response = request(data={'frame': base64.b64encode(frame), 'shape': frame.shape})
+        end = time.time()
+        print('FPS: {0:0.2f}'.format(1/(end - start)))
+        json_response = response.read().decode('utf-8')
+        object_list = json.loads(json_response)
+        object_list = json.loads(object_list)
+
+        for obj in object_list:
+            frame = draw_box(frame, obj)
+
+        cv2.imshow(window, frame)
+        if cv2.waitKey(1) & 0xFF == ord('q'):
+            break
+
+    cap.release()
+    cv2.destroyAllWindows()
 
 
 def image(image_file):
     img = cv2.imread(image_file)
+    cv2.namedWindow(window, cv2.WINDOW_NORMAL)
+    cv2.resizeWindow(window, 600, 600)
+
     if img is None:
         raise FileNotFoundError("Could not read image file '{}'.".format(image_file))
+
     start = time.time()
     response = request(data={'frame': base64.b64encode(img), 'shape': img.shape})
     end = time.time()
@@ -63,7 +95,7 @@ def image(image_file):
     for obj in object_list:
         img = draw_box(img, obj)
 
-    cv2.imshow('object-detection', img)
+    cv2.imshow(window, img)
     cv2.waitKey(0)
     cv2.destroyAllWindows()
 
