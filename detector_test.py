@@ -7,7 +7,7 @@ from detector import Detector
 
 def arg_parse():
     """
-    Parse arguments to the algorithm
+    Parse arguments
     :return: args object
     """
     parser = argparse.ArgumentParser(description='Script to test detector interface')

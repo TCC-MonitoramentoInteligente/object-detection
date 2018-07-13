@@ -125,6 +125,8 @@ class Detector:
         obj = Object()
         obj.x = x1
         obj.y = y1
+        obj.x2 = x2
+        obj.y2 = y2
         obj.width = x2 - x1
         obj.height = y2 - y1
         obj.score = float(t[6])
