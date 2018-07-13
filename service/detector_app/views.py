@@ -20,6 +20,7 @@ def detect(request):
             frame = np.frombuffer(buffer, dtype=np.uint8).reshape(shape)
             object_list = detector.detect(frame)
             json_string = json.dumps([obj.__dict__() for obj in object_list])
-            return JsonResponse({'object_list': json_string})
+            # return JsonResponse({'object_list': json_string})
+            return JsonResponse(json_string, safe=False)
         else:
             return HttpResponse("Detector module is not ready", status=500)

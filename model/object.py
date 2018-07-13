@@ -18,11 +18,25 @@ class Object:
                "x2={}, y2={}\n" \
                "width={}, height={}\n" \
                "label='{}'\n" \
-               "score={0:0.2f}\n"\
+               "score={0:0.2f}\n" \
             .format(self.x, self.y,
                     self.x2, self.y2,
                     self.width, self.height,
                     self.label, self.score)
+
+    # def __init__(self,
+    #              x, y,
+    #              x2, y2,
+    #              width, height,
+    #              label, score):
+    #     self.x = x
+    #     self.y = y
+    #     self.x2 = x2
+    #     self.y2 = y2
+    #     self.width = width
+    #     self.height = height
+    #     self.label = label
+    #     self.score = score
 
     def __eq__(self, other):
         return self.x == other.x and \

@@ -1,5 +1,6 @@
 import argparse
 import base64
+import json
 import time
 from urllib.parse import urlencode
 from urllib.request import Request, urlopen
@@ -29,6 +30,20 @@ def request(data):
     return urlopen(req)
 
 
+def draw_box(frame, obj, color_bgr=(0, 255, 0), thickness=2):
+    """
+    Draw a rectangle in an opencv frame
+    :param frame: opencv frame
+    :param obj: dict with detected object
+    :param color_bgr: color
+    :param thickness: thickness of rectangle
+    :return: frame
+    """
+    top_left = (obj.get('x'), obj.get('y'))
+    bottom_right = (obj.get('x2'), obj.get('y2'))
+    return cv2.rectangle(frame, top_left, bottom_right, color_bgr, thickness)
+
+
 def video(video_file):
     pass
 
@@ -40,12 +55,17 @@ def image(image_file):
     start = time.time()
     response = request(data={'frame': base64.b64encode(img), 'shape': img.shape})
     end = time.time()
-    print(response.read().decode('utf-8'))
-    print('Detection service took {0:0.2f} s to respond!'.format(end-start))
+    print('Detection service took {0:0.2f} s to respond!'.format(end - start))
+    json_response = response.read().decode('utf-8')
+    object_list = json.loads(json_response)
+    object_list = json.loads(object_list)
 
-    # cv2.imshow('test', img)
-    # cv2.waitKey(0)
-    # cv2.destroyAllWindows()
+    for obj in object_list:
+        img = draw_box(img, obj)
+
+    cv2.imshow('object-detection', img)
+    cv2.waitKey(0)
+    cv2.destroyAllWindows()
 
 
 def main():
