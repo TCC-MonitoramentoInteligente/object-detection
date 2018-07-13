@@ -7,7 +7,7 @@ from detector import Detector
 
 def arg_parse():
     """
-    Parse arguments to the algorithm
+    Parse arguments
     :return: args object
     """
     parser = argparse.ArgumentParser(description='Script to test detector interface')
@@ -26,6 +26,7 @@ def main():
         detector = Detector()
         detector.load_model()
         object_list = detector.detect(frame=img)
+        print()
         for obj in object_list:
             print(obj.to_string())
 

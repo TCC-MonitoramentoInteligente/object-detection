@@ -34,9 +34,6 @@ class Detector:
     _num_classes = 80
     _classes = None
 
-    def __del__(self):
-        torch.cuda.empty_cache()
-
     def set_dataset(self, dataset: str):
         """
         :param dataset: Dataset on which the network has been trained
@@ -128,11 +125,16 @@ class Detector:
         obj = Object()
         obj.x = x1
         obj.y = y1
+        obj.x2 = x2
+        obj.y2 = y2
         obj.width = x2 - x1
         obj.height = y2 - y1
         obj.score = float(t[6])
         obj.label = "{0}".format(self._classes[cls])
         return obj
+
+    def is_ready(self):
+        return self._model is not None
 
     def detect(self, frame):
         """

@@ -5,24 +5,57 @@ class Object:
     # (x, y) is the top left coordinate
     x = None
     y = None
-    width = 0
-    height = 0
+    # (x2, y2) is the bottom right coordinate
+    x2 = None
+    y2 = None
+    width = None
+    height = None
     label = None
-    score = .0
+    score = None
 
     def to_string(self):
-        return "x={0}, y={1}\n" \
-               "width={2}, height={3}\n" \
-               "label='{4}'\n" \
-               "score={5}\n"\
+        return "x={}, y={}\n" \
+               "x2={}, y2={}\n" \
+               "width={}, height={}\n" \
+               "label='{}'\n" \
+               "score={0:0.2f}\n" \
             .format(self.x, self.y,
+                    self.x2, self.y2,
                     self.width, self.height,
                     self.label, self.score)
+
+    # def __init__(self,
+    #              x, y,
+    #              x2, y2,
+    #              width, height,
+    #              label, score):
+    #     self.x = x
+    #     self.y = y
+    #     self.x2 = x2
+    #     self.y2 = y2
+    #     self.width = width
+    #     self.height = height
+    #     self.label = label
+    #     self.score = score
 
     def __eq__(self, other):
         return self.x == other.x and \
                self.y == other.y and \
+               self.x2 == other.x2 and \
+               self.y2 == other.y2 and \
                self.width == other.width and \
                self.height == other.height and \
                self.label == other.label and \
                self.score == other.score
+
+    def __dict__(self):
+        return {
+            'x': self.x,
+            'y': self.y,
+            'x2': self.x2,
+            'y2': self.y2,
+            'width': self.width,
+            'height': self.height,
+            'label': self.label,
+            'score': self.score,
+        }
