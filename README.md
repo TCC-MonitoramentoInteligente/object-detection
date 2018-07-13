@@ -1,8 +1,6 @@
-# Object detection module
+# Object detection service
 
-[NOTE]: Future updates will change this module to an independent service. Now, it is a Python interface, and after, will become a REST API.
-
-The detector is [A PyTorch implementation of a YOLO v3 Object Detector](https://github.com/ayooshkathuria/pytorch-yolo-v3). This module is a Python interface to the YOLO model.
+The detector is [A PyTorch implementation of a YOLO v3 Object Detector](https://github.com/ayooshkathuria/pytorch-yolo-v3). This service is a REST API interface to the YOLO model.
 
 ## Setup
 1. Install Nvidia CUDA-9.0, following this [tutorial](https://yangcha.github.io/CUDA90/);
@@ -12,31 +10,34 @@ The detector is [A PyTorch implementation of a YOLO v3 Object Detector](https://
 5. Download YOLO pre-trained weight file `$ wget https://pjreddie.com/media/files/yolov3.weights`.
 
 ## Testing
-There is a simple script to test if the detector is working.
+### Testing the module
+There is a simple script to test if the detector module is working, to verify that the environment has been correctly configured.
 Run `$ python3 detector_test.py --image /path/to/image`. You should see a list with all the detected objects, represented by the model/Object class.
+### Testing the API
+There is a script to test the service, using image or video. The first thing to do is run the server `$ python3 service/manage.py runserver --noreload`. The second, open a new tab and run the script to test either with image `$ python3 service_test.py --image /path/to/image` or video `$ python3 service_test.py --video /path/to/video`.
 
 ## Usage
+Make a POST to `http://localhost:8000/detect/`, with the following object:
 ```
-from detector import Detector
-
-detector = Detector()
-detector.load_model()
-
-...
-
-object_list = detector.detect(frame)
+{
+    'frame': frame # numpy array encoded in base64 
+    'shape': shape # tuple (width, height, channels)
+}
 ```
-The `Detector.detect` function returns a list of `Object` containing all objects detected by the model
+The response is a list containing all detected objects:
 ```
-class Object:
-    """
-    Represents a detected object
-    """
-    # (x, y) is the top left coordinate
-    x = None
-    y = None
-    width = 0
-    height = 0
-    label = None
-    score = .0
+[
+    {
+        # (x, y) is the top left coordinate
+        'x': 0,
+        'y': 0,
+        # (x2, y2) is the bottom right coordinate
+        'x2': 0,
+        'y2': 0,
+        'width': 0,
+        'height': 0,
+        'label': "",
+        'score': 0.0,
+    },
+]
 ```
