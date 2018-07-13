@@ -38,7 +38,7 @@ def image(image_file):
     if img is None:
         raise FileNotFoundError("Could not read image file '{}'.".format(image_file))
     start = time.time()
-    response = request(data={'image': base64.b64encode(img), 'shape': img.shape})
+    response = request(data={'frame': base64.b64encode(img), 'shape': img.shape})
     end = time.time()
     print(response.read().decode('utf-8'))
     print('Detection service took {0:0.2f} s to respond!'.format(end-start))

@@ -15,12 +15,10 @@ def detect(request):
     if request.method == 'POST':
         if detector.is_ready():
             shape = ast.literal_eval(request.POST.get('shape'))
-            buffer = base64.b64decode(request.POST.get('image'))
+            buffer = base64.b64decode(request.POST.get('frame'))
             # Reconstruct the image
-            img = np.frombuffer(buffer, dtype=np.uint8).reshape(shape)
-            object_list = detector.detect(img)
-            for obj in object_list:
-                print(obj.to_string())
+            frame = np.frombuffer(buffer, dtype=np.uint8).reshape(shape)
+            object_list = detector.detect(frame)
             json_string = json.dumps([obj.__dict__() for obj in object_list])
             return JsonResponse({'object_list': json_string})
         else:
