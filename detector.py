@@ -94,13 +94,12 @@ class Detector:
         Load the model and set its parameters
         :return:
         """
+        print("Loading network...")
         self._classes = load_classes('data/coco.names')
         self._cuda = torch.cuda.is_available()
 
-        print("Loading network...")
         self._model = Darknet(self._cfg)
         self._model.load_weights(self._weights)
-        print("Network successfully loaded!")
 
         self._model.net_info["height"] = self._resolution
         inp_dim = int(self._model.net_info["height"])
@@ -112,6 +111,7 @@ class Detector:
 
         # self._model(get_test_input(inp_dim, CUDA), CUDA)
         self._model.eval()
+        print("Network successfully loaded!")
 
     def _create_object(self, t):
         """
