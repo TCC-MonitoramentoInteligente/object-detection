@@ -108,3 +108,6 @@ ENV/
 
 # Yolo
 weights/
+
+# Output files
+out/
