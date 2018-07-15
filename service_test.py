@@ -9,7 +9,7 @@ from urllib.request import Request, urlopen
 
 import cv2
 
-service_url = 'http://localhost:8000/detect/'
+service_url = 'http://localhost:8000/object-detector/detect/'
 window = 'object-detection'
 script_path = os.path.dirname(os.path.abspath(__file__))
 
