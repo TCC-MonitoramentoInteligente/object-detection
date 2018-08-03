@@ -12,6 +12,7 @@ class FalseDetector:
         return {'detection': 'OK'}
 
 
-client_ip = ""
+client_ip = "localhost"
 object_detector_threads = []
 detector = FalseDetector()
+detector.load_model()
