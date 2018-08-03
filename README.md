@@ -1,6 +1,6 @@
 # Object detection service
 
-The detector is [A PyTorch implementation of a YOLO v3 Object Detector](https://github.com/ayooshkathuria/pytorch-yolo-v3). This service is a REST API interface to the YOLO model.
+The detector is [A PyTorch implementation of a YOLO v3 Object Detector](https://github.com/ayooshkathuria/pytorch-yolo-v3). This service receives real time video, detects objects and prints the results.
 
 ## Setup
 From `object-detection/`, do:
@@ -13,31 +13,10 @@ From `object-detection/`, do:
 ## Testing
 ### Testing the module
 There is a simple script to test if the detector module is working, to verify that the environment has been correctly configured. Run `$ python3 detector_test.py --image /path/to/image`. You should see a list with all the detected objects, represented by the model/Object class.
-### Testing the API
-There is a script to test the service, using image or video. The first thing to do is run the server `$ python3 service/manage.py runserver --noreload`. The second, open a new tab and run the script `$ python3 service_test.py`. Use the `--image` flag to set the image file path. Use the `--video` flag to set the video file path. Use the `--save` flag to save the output to the `out/` directory. If the `--save` flag is not used, the output will be showed in a OpenCV's window, that can be closed pressing `q`.
 
 ## Usage
-Make a POST to `http://localhost:8000/detect/`, with the following object:
-```
-{
-    'frame': frame # numpy array encoded in base64 
-    'shape': shape # tuple (width, height, channels)
-}
-```
-The response is a list containing all detected objects:
-```
-[
-    {
-        # (x, y) is the top left coordinate
-        'x': 0,
-        'y': 0,
-        # (x2, y2) is the bottom right coordinate
-        'x2': 0,
-        'y2': 0,
-        'width': 0,
-        'height': 0,
-        'label': "",
-        'score': 0.0,
-    },
-]
-```
+ - First, clone [python-live-video-streaming](https://github.com/jhonata-antunes/python-live-video-streaming) repo. It contains the video streaming server.
+ - Run the service `$ python3 service/manage.py runserver`.
+ - Inscrible a new video transmission `$ curl --data "port=5005". http://127.0.0.1:8000/object-detection/register/`, passing the port where the video is being transmitted to.
+ - Start video streaming `$ python3 server.py --video /path/to/video/file --port 5005`.
+ - If you don not want to process video any more, unsubscribe `$ curl --data "port=5005" http://127.0.0.1:8000/object-detection/unsubscribe/`.

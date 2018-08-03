@@ -7,22 +7,25 @@ import numpy as np
 
 class VideoStreaming(threading.Thread):
 
-    def __init__(self, kwargs=None):
+    def __init__(self, ip, port):
         super().__init__()
-        ip = kwargs.get('ip')
-        port = kwargs.get('port')
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         self.sock.bind((ip, port))
         self.id = str(port)
         self.frame = None
         self.is_frame_new = False
-        return
+        self.stop = False
+        print('Creating video streaming thread with id {}'.format(self.id))
 
     def run(self):
         data = b''
         buffer_size = 65536
 
         while True:
+            if self.stop:
+                print('Killing video streaming thread with id {}'.format(self.id))
+                self.sock.close()
+                break
             data += self.sock.recv(buffer_size)
             a = data.find(b'\xff\xd8')
             b = data.find(b'\xff\xd9')
@@ -42,3 +45,6 @@ class VideoStreaming(threading.Thread):
 
     def get_id(self):
         return self.id
+
+    def kill(self):
+        self.stop = True
