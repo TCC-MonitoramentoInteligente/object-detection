@@ -9,14 +9,13 @@ sys.path.append('{}/../../'.format(os.path.dirname(os.path.abspath(__file__))))
 sys.path.append('{}/../'.format(os.path.dirname(os.path.abspath(__file__))))
 
 from detector import Detector
-from object_detection_service.models import object_detector_threads, client_ip
+from object_detection_service.models import client_ip, mqtt_client, object_detector_threads
 from threads.object_detector import ObjectDetector
 from threads.video_streaming import VideoStreaming
 
 
 def messenger(message):
-    # TODO: implement async messenger
-    print(json.dumps(message))
+    mqtt_client.publish(topic="object-detection/objects", payload=json.dumps(message))
 
 
 @csrf_exempt
