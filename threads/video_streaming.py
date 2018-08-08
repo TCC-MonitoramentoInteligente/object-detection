@@ -32,9 +32,10 @@ class VideoStreaming(threading.Thread):
             if a != -1 and b != -1:
                 jpg = data[a:b + 2]
                 data = data[b + 2:]
-                self.is_frame_new = True
                 self.frame = cv2.imdecode(np.fromstring(jpg, dtype=np.uint8),
                                           cv2.IMREAD_COLOR)
+                if self.frame is not None:
+                    self.is_frame_new = True
 
     def get_frame(self):
         self.is_frame_new = False

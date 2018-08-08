@@ -13,7 +13,7 @@ From `object-detection/`, do:
 
 ## Testing
 ### Testing the module
-There is a simple script to test if the detector module is working, to verify that the environment has been correctly configured. Run `$ python3 detector_test.py --image /path/to/image`. You should see a list with all the detected objects, represented by the model/Object class.
+There is a simple script to test if the detector module is working, to verify that the environment has been correctly configured. Run `$ python3 test/detector_test.py --image /path/to/image`. You should see a list with all the detected objects.
 
 ## Usage
  - Clone [python-live-video-streaming](https://github.com/jhonata-antunes/python-live-video-streaming) repo. It contains the video streaming server
