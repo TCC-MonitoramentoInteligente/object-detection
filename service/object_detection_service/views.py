@@ -8,7 +8,8 @@ from django.views.decorators.csrf import csrf_exempt
 sys.path.append('{}/../../'.format(os.path.dirname(os.path.abspath(__file__))))
 sys.path.append('{}/../'.format(os.path.dirname(os.path.abspath(__file__))))
 
-from object_detection_service.models import detector, object_detector_threads, client_ip
+from detector import Detector
+from object_detection_service.models import object_detector_threads, client_ip
 from threads.object_detector import ObjectDetector
 from threads.video_streaming import VideoStreaming
 
@@ -21,6 +22,8 @@ def messenger(message):
 @csrf_exempt
 def register(request):
     if request.method == 'POST':
+        detector = Detector()
+        detector.load_model()
         port = int(request.POST.get('port'))
         vs = VideoStreaming(ip=client_ip, port=port)
         od = ObjectDetector(vs=vs, detector=detector, messenger=messenger)
