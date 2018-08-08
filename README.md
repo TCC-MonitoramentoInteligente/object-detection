@@ -4,12 +4,12 @@ The detector is [A PyTorch implementation of a YOLO v3 Object Detector](https://
 
 ## Setup
 From `object-detection/`, do:
-1. Install Nvidia CUDA-9.0, following this [tutorial](https://yangcha.github.io/CUDA90/)
-2. Create virtualenv `$ virtualenv --system-site-packages -p python3 venv`
-3. Activate virtualenv `$ source venv/bin/activate`
-4. Install requirements `$ pip install -r requirements.txt`
-5. Download YOLO pre-trained weight file `$ wget https://pjreddie.com/media/files/yolov3.weights -P weights/`
-6. Install openCV library `$ sudo apt-get install libopencv-dev python-opencv`
+1. Install OpenCV library `$ sudo apt-get install libopencv-dev python-opencv`
+2. Install Nvidia CUDA-9.0, following this [tutorial](https://yangcha.github.io/CUDA90/)
+3. Create virtualenv `$ virtualenv --system-site-packages -p python3 venv`
+4. Activate virtualenv `$ source venv/bin/activate`
+5. Install requirements `$ pip install -r requirements.txt`
+6. Download YOLO pre-trained weight file `$ wget https://pjreddie.com/media/files/yolov3.weights -P weights/`
 
 ## Testing
 ### Testing the module
