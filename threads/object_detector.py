@@ -21,8 +21,8 @@ class ObjectDetector(threading.Thread):
                 break
             elif self.vs.has_new_frame():
                 frame = self.vs.get_frame()
-                objects = self.detector.detect(frame)
-                self.messenger({'id': self.id, 'objects': objects})
+                objects = self.detector.detect(frame['frame'])
+                self.messenger({'id': self.id, 'time': frame['time'], 'objects': objects})
 
     def kill(self):
         self.stop = True
