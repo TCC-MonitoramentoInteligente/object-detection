@@ -2,7 +2,7 @@ import json
 import os
 import sys
 
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 
 sys.path.append('{}/../../'.format(os.path.dirname(os.path.abspath(__file__))))
@@ -47,7 +47,9 @@ def unsubscribe(request):
         od_id = request.POST.get('port')
         object_detector = None
         for od in object_detector_threads:
-            if od.get_id() == od_id:
+            if od.get_id() is None:
+                object_detector_threads.remove(od)
+            elif od.get_id() == od_id:
                 object_detector = od
                 break
         if object_detector is None:
@@ -56,3 +58,19 @@ def unsubscribe(request):
             object_detector.kill()
             object_detector_threads.remove(object_detector)
             return HttpResponse("OK", status=200)
+
+
+@csrf_exempt
+def status(request):
+    if request.method == 'GET':
+        response = []
+        for od in object_detector_threads:
+            if od.get_id() is None:
+                object_detector_threads.remove(od)
+            else:
+                response.append({
+                    'id': od.get_id(),
+                    'video_fps': od.get_video_fps(),
+                    'detection_fps': od.get_detection_fps(),
+                })
+        return JsonResponse(response, safe=False)

@@ -20,11 +20,13 @@ class VideoStreaming(threading.Thread):
         self.is_frame_new = False
         self.stop = False
         self.last_data_time = time.time()
+        self.fps = 0
         print('Creating video streaming thread with id {}'.format(self.id))
 
     def run(self):
         data = b''
         buffer_size = 65536
+        start = time.time()
 
         while True:
             if self.stop or (time.time() - self.last_data_time) > self.timeout:
@@ -49,6 +51,8 @@ class VideoStreaming(threading.Thread):
                                                    cv2.IMREAD_COLOR)
                 if self.frame is not None:
                     self.is_frame_new = True
+                self.fps = 1 / (time.time() - start)
+                start = time.time()
 
     def get_frame(self):
         self.is_frame_new = False
@@ -59,6 +63,9 @@ class VideoStreaming(threading.Thread):
 
     def get_id(self):
         return self.id
+
+    def get_fps(self):
+        return self.fps
 
     def kill(self):
         self.stop = True
