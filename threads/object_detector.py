@@ -15,10 +15,12 @@ class ObjectDetector(threading.Thread):
 
     def run(self):
         while True:
-            if self.stop:
+            if self.stop or not self.vs.isAlive():
                 self.vs.kill()
                 print('Killing object detector thread with id {}'.format(self.id))
+                self.id = None
                 break
+
             elif self.vs.has_new_frame():
                 frame = self.vs.get_frame()
                 objects = self.detector.detect(frame['frame'])

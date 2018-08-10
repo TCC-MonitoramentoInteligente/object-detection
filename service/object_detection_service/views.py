@@ -28,7 +28,9 @@ def register(request):
             return HttpResponse("Value {} can't be converted to integer".format(port),
                                 status=400)
         for od in object_detector_threads:
-            if od.get_id() == port:
+            if od.get_id() is None:
+                object_detector_threads.remove(od)
+            elif od.get_id() == port:
                 return HttpResponse("Port {} is already in use".format(port), status=400)
         detector = Detector()
         detector.load_model()
@@ -52,4 +54,5 @@ def unsubscribe(request):
             return HttpResponse("Port {} not found".format(od_id), status=404)
         else:
             object_detector.kill()
+            object_detector_threads.remove(object_detector)
             return HttpResponse("OK", status=200)

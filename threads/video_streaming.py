@@ -1,11 +1,14 @@
 import socket
 import threading
+import time
 
 import cv2
 import numpy as np
 
 
 class VideoStreaming(threading.Thread):
+
+    timeout = 60
 
     def __init__(self, ip, port):
         super().__init__()
@@ -16,6 +19,7 @@ class VideoStreaming(threading.Thread):
         self.frame = {'time': 0, 'frame': None}
         self.is_frame_new = False
         self.stop = False
+        self.last_data_time = time.time()
         print('Creating video streaming thread with id {}'.format(self.id))
 
     def run(self):
@@ -23,12 +27,14 @@ class VideoStreaming(threading.Thread):
         buffer_size = 65536
 
         while True:
-            if self.stop:
+            if self.stop or (time.time() - self.last_data_time) > self.timeout:
                 print('Killing video streaming thread with id {}'.format(self.id))
+                self.id = None
                 self.sock.close()
                 break
             try:
                 data += self.sock.recv(buffer_size)
+                self.last_data_time = time.time()
             except BlockingIOError:
                 pass
             a = data.find(b'\xff\xd8')
