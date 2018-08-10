@@ -10,8 +10,8 @@ class VideoStreaming(threading.Thread):
     def __init__(self, ip, port):
         super().__init__()
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        self.sock.bind((ip, port))
-        self.id = str(port)
+        self.sock.bind((ip, int(port)))
+        self.id = port
         self.frame = {'time': 0, 'frame': None}
         self.is_frame_new = False
         self.stop = False

@@ -21,9 +21,17 @@ def messenger(message):
 @csrf_exempt
 def register(request):
     if request.method == 'POST':
+        port = request.POST.get('port')
+        try:
+            int(port)
+        except ValueError:
+            return HttpResponse("Value {} can't be converted to integer".format(port),
+                                status=400)
+        for od in object_detector_threads:
+            if od.get_id() == port:
+                return HttpResponse("Port {} is already in use".format(port), status=400)
         detector = Detector()
         detector.load_model()
-        port = int(request.POST.get('port'))
         vs = VideoStreaming(ip=client_ip, port=port)
         od = ObjectDetector(vs=vs, detector=detector, messenger=messenger)
         od.start()
