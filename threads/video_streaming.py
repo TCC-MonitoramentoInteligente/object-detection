@@ -11,6 +11,7 @@ class VideoStreaming(threading.Thread):
         super().__init__()
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         self.sock.bind((ip, int(port)))
+        self.sock.setblocking(False)
         self.id = port
         self.frame = {'time': 0, 'frame': None}
         self.is_frame_new = False
@@ -26,7 +27,10 @@ class VideoStreaming(threading.Thread):
                 print('Killing video streaming thread with id {}'.format(self.id))
                 self.sock.close()
                 break
-            data += self.sock.recv(buffer_size)
+            try:
+                data += self.sock.recv(buffer_size)
+            except BlockingIOError:
+                pass
             a = data.find(b'\xff\xd8')
             b = data.find(b'\xff\xd9')
             if a != -1 and b != -1:
