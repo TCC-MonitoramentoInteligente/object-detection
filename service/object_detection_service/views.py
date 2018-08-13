@@ -60,7 +60,7 @@ def unsubscribe(request):
 def status(request):
     if request.method == 'GET':
         response = []
-        for id_id, od in object_detector_threads:
+        for id_id, od in object_detector_threads.items():
             response.append({
                 'id': od.get_id(),
                 'video_fps': od.get_video_fps(),
