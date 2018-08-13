@@ -20,6 +20,7 @@ def messenger(message):
 
 def on_detection_finish(od_id):
     del object_detector_threads[od_id]
+    mqtt_client.publish(topic="object-detection/remove", payload=od_id)
 
 
 @csrf_exempt
@@ -39,6 +40,7 @@ def register(request):
         od = ObjectDetector(vs, detector, messenger, on_detection_finish)
         od.start()
         object_detector_threads[port] = od
+        mqtt_client.publish(topic="object-detection/add", payload=port)
         return HttpResponse("OK", status=200)
 
 
