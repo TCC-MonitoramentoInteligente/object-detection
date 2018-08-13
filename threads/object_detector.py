@@ -4,7 +4,7 @@ import time
 
 class ObjectDetector(threading.Thread):
 
-    def __init__(self, vs, detector, messenger):
+    def __init__(self, vs, detector, messenger, on_finish):
         super().__init__()
         self.vs = vs
         self.detector = detector
@@ -13,6 +13,7 @@ class ObjectDetector(threading.Thread):
         self.vs.start()
         self.id = vs.get_id()
         self.fps = 0
+        self.callback = on_finish
         print('Creating object detector thread with id {}'.format(self.id))
 
     def run(self):
@@ -22,6 +23,7 @@ class ObjectDetector(threading.Thread):
             if self.stop or not self.vs.isAlive():
                 self.vs.kill()
                 print('Killing object detector thread with id {}'.format(self.id))
+                self.callback(self.id)
                 self.id = None
                 break
 
