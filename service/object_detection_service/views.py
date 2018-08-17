@@ -42,6 +42,8 @@ def register(request):
         object_detector_threads[port] = od
         mqtt_client.publish(topic="object-detection/add", payload=port)
         return HttpResponse("OK", status=200)
+    else:
+        return HttpResponse("Method not allowed", status=405)
 
 
 @csrf_exempt
@@ -54,6 +56,8 @@ def unsubscribe(request):
         else:
             object_detector.kill()
             return HttpResponse("OK", status=200)
+    else:
+        return HttpResponse("Method not allowed", status=405)
 
 
 @csrf_exempt
@@ -67,3 +71,5 @@ def status(request):
                 'detection_fps': od.get_detection_fps(),
             })
         return JsonResponse(response, safe=False)
+    else:
+        return HttpResponse("Method not allowed", status=405)
