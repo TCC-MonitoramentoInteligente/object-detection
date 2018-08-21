@@ -26,6 +26,7 @@ def on_detection_finish(od_id):
 @csrf_exempt
 def register(request):
     if request.method == 'POST':
+        debug_ip = request.POST.get('debug_ip')
         port = request.POST.get('port')
         try:
             int(port)
@@ -37,7 +38,7 @@ def register(request):
         detector = Detector()
         detector.load_model()
         vs = VideoStreaming(client_ip, port)
-        od = ObjectDetector(vs, detector, messenger, on_detection_finish)
+        od = ObjectDetector(vs, detector, messenger, on_detection_finish, debug_ip)
         od.start()
         object_detector_threads[port] = od
         mqtt_client.publish(topic="object-detection/add", payload=port)
