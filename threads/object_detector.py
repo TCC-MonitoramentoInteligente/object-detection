@@ -37,7 +37,7 @@ class ObjectDetector(threading.Thread):
                 frame = self.vs.get_frame()
                 objects = self.detector.detect(frame['frame'])
                 if self.debug_ip:
-                    threading.Thread(target=self.send_detection, args=(frame, objects)).start()
+                    threading.Thread(target=self.send_detection, args=(frame['frame'], objects)).start()
                 self.fps = 1 / (time.time() - start)
                 start = time.time()
                 self.messenger({'id': self.id, 'time': frame['time'], 'objects': objects})
@@ -56,12 +56,13 @@ class ObjectDetector(threading.Thread):
 
     def send_detection(self, frame, objects):
         """
-        Method to debug detection
+        Method to debug detection of person
         :return:
         """
         try:
             for obj in objects:
-                frame = draw_box(frame, obj, (0, 255, 0))
+                if obj.get('label') == 'person':
+                    frame = draw_box(frame, obj, (0, 255, 0))
 
             max_size = 65536 - 8  # less 8 bytes of video time
             jpg_quality = 80
