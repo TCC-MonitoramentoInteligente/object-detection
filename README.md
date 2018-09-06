@@ -16,10 +16,10 @@ From `object-detection/`, do:
 There is a simple script to test if the detector module is working, to verify that the environment has been correctly configured. Run `$ python3 test/detector_test.py --image /path/to/image`. You should see a list with all the detected objects.
 
 ## Usage
- - Clone [python-live-video-streaming](https://github.com/jhonata-antunes/python-live-video-streaming) repo. It contains the video streaming server
+ - Clone [python-live-video-streaming](https://github.com/jhonata-antunes/python-live-video-streaming) repo. It contains the video streaming client
  - Run the service `$ python3 service/manage.py runserver`
  - Inscribe a new video transmission `$ curl --data "port=5005" http://127.0.0.1:8000/object-detection/register/`, passing the port where the video is being transmitted to (after 120s without receiving video, you must register again)
- - To debug, receiving the video with detected objects run `curl --data "port=5005&debug_ip=localhost" http://127.0.0.1:8000/object-detection/register/` and, `client.py` on your machine
- - Start video streaming `$ python3 server.py --video /path/to/video/file --port 5005`
+ - To debug, receiving the video with detected objects run `curl --data "port=5005&debug_ip=localhost" http://127.0.0.1:8000/object-detection/register/` and, `python3 server.py` on your machine
+ - Start video streaming `$ python3 client.py --video /path/to/video/file --port 5005`
  - If you don not want to process video any more, unsubscribe `$ curl --data "port=5005" http://127.0.0.1:8000/object-detection/unsubscribe/`
- - Get service status `$ curl http://127.0.0.1:8000/object-detection/status/`
+ - Get service status `$ curl http://127.0.0.1:8000/object-detection/status/
