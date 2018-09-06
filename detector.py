@@ -10,7 +10,7 @@ from src.util import write_results, load_classes
 def prep_image(img, inp_dim):
     """
     Prepare image for inputting to the neural network.
-    :param img:
+    :param img: numpy frame
     :param inp_dim:
     :return: Returns a Variable
     """
@@ -117,7 +117,7 @@ class Detector:
         """
         Creates an object, that represents the detected object
         :param t: tensor
-        :return: Object
+        :return: dict
         """
         x1, y1 = int(t[1]), int(t[2])
         x2, y2 = int(t[3]), int(t[4])
@@ -131,7 +131,7 @@ class Detector:
         obj.height = y2 - y1
         obj.score = float(t[6])
         obj.label = "{0}".format(self._classes[cls])
-        return obj
+        return obj.__dict__()
 
     def is_ready(self):
         return self._model is not None
@@ -139,7 +139,7 @@ class Detector:
     def detect(self, frame):
         """
         Use yolov3 model to detect objects
-        :param frame: opencv frame
+        :param frame: numpy frame
         :return: list containing Object, that represents a detected object
         """
         if self._model is None:

@@ -38,8 +38,6 @@ class Object:
         return {
             'x': self.x,
             'y': self.y,
-            'x2': self.x2,
-            'y2': self.y2,
             'width': self.width,
             'height': self.height,
             'label': self.label,
