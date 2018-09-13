@@ -76,9 +76,9 @@ def status(request):
 @csrf_exempt
 def event_print(request):
     if request.method == 'GET':
-        cam_id = request.POST.get('cam_id')
+        cam_id = request.GET.get('cam_id')
         object_detector = object_detector_threads.get(cam_id)
-        if not object_detector:
+        if object_detector is None:
             return HttpResponse("Camera {} not found".format(cam_id), status=404)
         frame = object_detector.get_frame()
         return HttpResponse(frame.tobytes(), status=200)
