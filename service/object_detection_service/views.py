@@ -76,3 +76,16 @@ def status(request):
         return JsonResponse(response, safe=False)
     else:
         return HttpResponse("Method not allowed", status=405)
+
+
+@csrf_exempt
+def event_print(request):
+    if request.method == 'GET':
+        port = request.POST.get('port')
+        object_detector = object_detector_threads.get(port)
+        if not object_detector:
+            return HttpResponse("Port {} not found".format(port), status=404)
+        frame = object_detector.get_frame()
+        return HttpResponse(frame.tobytes(), status=200)
+    else:
+        return HttpResponse("Method not allowed", status=405)
