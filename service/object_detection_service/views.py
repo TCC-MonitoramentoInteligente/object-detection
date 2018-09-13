@@ -1,3 +1,4 @@
+import base64
 import json
 import os
 import sys
@@ -81,6 +82,6 @@ def event_print(request):
         if object_detector is None:
             return HttpResponse("Camera {} not found".format(cam_id), status=404)
         frame = object_detector.get_frame()
-        return HttpResponse(frame.tobytes(), status=200)
+        return HttpResponse(base64.b64encode(frame), status=200)
     else:
         return HttpResponse("Method not allowed", status=405)
