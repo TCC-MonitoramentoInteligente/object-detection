@@ -57,6 +57,9 @@ class ObjectDetector(threading.Thread):
     def get_frame(self):
         return self.vs.get_frame()['frame']
 
+    def get_port(self):
+        return self.vs.get_port()
+
     def send_detection(self, frame, objects):
         """
         Method to debug detection of person
