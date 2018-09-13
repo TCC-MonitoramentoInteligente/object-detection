@@ -5,11 +5,13 @@ import sys
 from django.http import HttpResponse, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 
+from service import settings
+
 sys.path.append('{}/../../'.format(os.path.dirname(os.path.abspath(__file__))))
 sys.path.append('{}/../'.format(os.path.dirname(os.path.abspath(__file__))))
 
 from detector import Detector
-from object_detection_service.models import client_ip, mqtt_client, object_detector_threads
+from object_detection_service.models import mqtt_client, object_detector_threads
 from threads.object_detector import ObjectDetector
 from threads.video_streaming import VideoStreaming
 
@@ -37,7 +39,7 @@ def register(request):
             return HttpResponse("Port {} is already in use".format(port), status=400)
         detector = Detector()
         detector.load_model()
-        vs = VideoStreaming(client_ip, port)
+        vs = VideoStreaming(settings.GPU_SERVER_IP, port)
         od = ObjectDetector(vs, detector, messenger, on_detection_finish, debug_ip)
         od.start()
         object_detector_threads[port] = od
