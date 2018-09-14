@@ -13,6 +13,8 @@ https://docs.djangoproject.com/en/2.0/ref/settings/
 import os
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
+import sys
+
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
@@ -25,8 +27,12 @@ SECRET_KEY = '1q=hjx@d3#+=39##^x830fpe*1+s(xt99jsw*z^ba+j#+82ryw'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+GPU_SERVER_IP = '10.242.128.252'
+BROKER_IP = '10.242.103.152'
 
+ALLOWED_HOSTS = [
+    GPU_SERVER_IP,
+]
 
 # Application definition
 

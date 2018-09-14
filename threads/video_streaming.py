@@ -10,17 +10,18 @@ class VideoStreaming(threading.Thread):
 
     timeout = 60
 
-    def __init__(self, ip, port):
+    def __init__(self, ip, cam_id):
         super().__init__()
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        self.sock.bind((ip, int(port)))
+        self.sock.bind((ip, 0))
         self.sock.setblocking(False)
-        self.id = port
         self.frame = {'time': 0, 'frame': None}
         self.is_frame_new = False
         self.stop = False
         self.last_data_time = time.time()
         self.fps = 0
+        self.id = cam_id
+        self.port = self.sock.getsockname()[1]
         print('Creating video streaming thread with id {}'.format(self.id))
 
     def run(self):
@@ -69,3 +70,6 @@ class VideoStreaming(threading.Thread):
 
     def kill(self):
         self.stop = True
+
+    def get_port(self):
+        return self.port

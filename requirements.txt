@@ -1,3 +1,4 @@
+PIL
 django
 pandas
 numpy
