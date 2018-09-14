@@ -1,8 +1,12 @@
 import base64
+from io import BytesIO
+
+import cv2
 import json
 import os
 import sys
 
+from PIL import Image
 from django.http import HttpResponse, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 
@@ -82,6 +86,11 @@ def event_print(request):
         if object_detector is None:
             return HttpResponse("Camera {} not found".format(cam_id), status=404)
         frame = object_detector.get_frame()
-        return HttpResponse(base64.b64encode(frame), status=200)
+        frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+        pil_frame = Image.fromarray(frame)
+        buffered = BytesIO()
+        pil_frame.save(buffered, format="JPEG")
+        b64 = base64.b64encode(buffered.getvalue())
+        return HttpResponse(b64, status=200)
     else:
         return HttpResponse("Method not allowed", status=405)
