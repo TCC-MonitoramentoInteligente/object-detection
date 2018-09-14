@@ -8,7 +8,7 @@ import time
 
 class ObjectDetector(threading.Thread):
 
-    def __init__(self, vs, detector, messenger, on_finish, debug_ip):
+    def __init__(self, vs, detector, messenger, on_finish, debug_ip, debug_port):
         super().__init__()
         self.vs = vs
         self.detector = detector
@@ -20,6 +20,7 @@ class ObjectDetector(threading.Thread):
         self.callback = on_finish
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         self.debug_ip = debug_ip
+        self.debug_port = debug_port
         print('Creating object detector thread with id {}'.format(self.id))
 
     def run(self):
@@ -36,11 +37,11 @@ class ObjectDetector(threading.Thread):
             if self.vs.has_new_frame():
                 frame = self.vs.get_frame()
                 objects = self.detector.detect(frame['frame'])
-                if self.debug_ip:
+                if self.debug_ip and self.debug_port:
                     threading.Thread(target=self.send_detection, args=(frame['frame'], objects)).start()
                 self.fps = 1 / (time.time() - start)
                 start = time.time()
-                self.messenger({'id': self.id, 'time': frame['time'], 'objects': objects})
+                self.messenger({'cam_id': self.id, 'time': frame['time'], 'objects': objects})
 
     def kill(self):
         self.stop = True
@@ -84,7 +85,7 @@ class ObjectDetector(threading.Thread):
             vt = np.array([0], dtype=np.float64)
             data = encoded_img.tobytes() + vt.tobytes()
 
-            self.sock.sendto(data, (self.debug_ip, 5005))
+            self.sock.sendto(data, (self.debug_ip, self.debug_port))
         except Exception as ex:
             print(ex)
 
