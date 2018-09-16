@@ -20,7 +20,7 @@ class ObjectDetector(threading.Thread):
         self.callback = on_finish
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         self.debug_ip = debug_ip
-        self.debug_port = debug_port
+        self.debug_port = int(debug_port)
         print('Creating object detector thread with id {}'.format(self.id))
 
     def run(self):

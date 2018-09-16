@@ -10,10 +10,10 @@ class VideoStreaming(threading.Thread):
 
     timeout = 60
 
-    def __init__(self, ip, cam_id):
+    def __init__(self, ip, cam_id, port):
         super().__init__()
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        self.sock.bind((ip, 0))
+        self.sock.bind((ip, int(port)))
         self.sock.setblocking(False)
         self.frame = {'time': 0, 'frame': None}
         self.is_frame_new = False
