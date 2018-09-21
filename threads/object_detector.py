@@ -20,9 +20,9 @@ class ObjectDetector(threading.Thread):
         self.callback = on_finish
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         self.debug_ip = debug_ip
-        if debug_port:
+        try:
             self.debug_port = int(debug_port)
-        else:
+        except ValueError:
             self.debug_port = None
         print('Creating object detector thread with id {}'.format(self.id))
 
