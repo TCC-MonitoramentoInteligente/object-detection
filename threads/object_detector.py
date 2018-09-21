@@ -33,7 +33,7 @@ class ObjectDetector(threading.Thread):
             if self.stop or not self.vs.isAlive():
                 self.vs.kill()
                 print('Killing object detector thread with id {}'.format(self.id))
-                self.callback(self.id)
+                self.callback(self.id, not self.vs.isAlive())
                 self.id = None
                 break
 

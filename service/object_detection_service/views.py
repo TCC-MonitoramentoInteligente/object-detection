@@ -25,9 +25,12 @@ def messenger(message):
     mqtt_client.publish(topic="object-detection/objects", payload=json.dumps(message))
 
 
-def on_detection_finish(od_id):
-    del object_detector_threads[od_id]
-    mqtt_client.publish(topic="object-detection/remove", payload=od_id)
+def on_detection_finish(cam_id, timeout):
+    del object_detector_threads[cam_id]
+    mqtt_client.publish(topic="object-detection/remove", payload=cam_id)
+    if timeout:
+        mqtt_client.publish(topic="object-detection/logs/success",
+                            payload='Camera {} was unregistered automatically by timeout'.format(cam_id))
 
 
 @csrf_exempt
@@ -45,6 +48,8 @@ def register(request):
         od.start()
         object_detector_threads[cam_id] = od
         mqtt_client.publish(topic="object-detection/add", payload=cam_id)
+        mqtt_client.publish(topic="object-detection/logs/success",
+                            payload='Camera {} was successfully registered'.format(cam_id))
         return HttpResponse(od.get_port(), status=200)
     else:
         return HttpResponse("Method not allowed", status=405)
@@ -59,6 +64,8 @@ def unregister(request):
             return HttpResponse("Camera {} not found".format(cam_id), status=404)
         else:
             object_detector.kill()
+            mqtt_client.publish(topic="object-detection/logs/success",
+                                payload='Camera {} was successfully unregistered'.format(cam_id))
             return HttpResponse("OK", status=200)
     else:
         return HttpResponse("Method not allowed", status=405)
@@ -92,6 +99,8 @@ def event_print(request):
         buffered = BytesIO()
         pil_frame.save(buffered, format="JPEG")
         b64 = base64.b64encode(buffered.getvalue())
+        mqtt_client.publish(topic="object-detection/logs/success",
+                            payload='An event print was requested from camera {}'.format(cam_id))
         return HttpResponse(b64, status=200)
     else:
         return HttpResponse("Method not allowed", status=405)
