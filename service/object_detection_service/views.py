@@ -6,6 +6,7 @@ import json
 import os
 import sys
 
+import requests
 from PIL import Image
 from django.http import HttpResponse, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
@@ -16,7 +17,7 @@ sys.path.append('{}/../../'.format(os.path.dirname(os.path.abspath(__file__))))
 sys.path.append('{}/../'.format(os.path.dirname(os.path.abspath(__file__))))
 
 from detector import Detector
-from object_detection_service.models import mqtt_client, object_detector_threads
+from object_detection_service.models import cameras_url, mqtt_client, object_detector_threads
 from threads.object_detector import ObjectDetector
 from threads.video_streaming import VideoStreaming
 
@@ -38,7 +39,26 @@ def register(request):
     if request.method == 'POST':
         cam_id = request.POST.get('cam_id')
         if object_detector_threads.get(cam_id) is not None:
+            mqtt_client.publish(topic="object-detection/logs/error",
+                                payload='Register error. Camera {} is already registered.'
+                                .format(cam_id))
             return HttpResponse("Camera {} is already registered".format(cam_id), status=400)
+
+        url = cameras_url + '{}/'.format(cam_id)
+        try:
+            cam_request = requests.get(url, timeout=3)
+        except requests.exceptions.ConnectTimeout:
+            error = 'Users service is not responding. Unable to check camera permissions.'
+            mqtt_client.publish(topic="object-detection/logs/error",
+                                payload='Register error. ' + error
+                                .format(cam_id))
+            return HttpResponse(error, status=500)
+        if not cam_request.status_code == requests.codes.ok:
+            mqtt_client.publish(topic="object-detection/logs/error",
+                                payload='Register error. Camera {} not allowed.'
+                                .format(cam_id))
+            return HttpResponse("Camera {} not allowed".format(cam_id), status=403)
+
         detector = Detector()
         detector.load_model()
         vs = VideoStreaming(settings.GPU_SERVER_IP, cam_id)
