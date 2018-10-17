@@ -29,12 +29,17 @@ There is a simple script to test if the detector module is working, to verify th
   - Method: POST
   - Data:
     - `cam_id`: Camera ID
-    - `debug_ip` and `debug_port`: If you need to see the output of the detections, pass the address you want the service to transmit. You can visualise the video with [python-live-video-streaming](https://github.com/jhonata-antunes/python-live-video-streaming) server
-  - API response: a free port number where you should transmit your video
+  - Request response: a free port number where you should transmit your video
   - Detection asynchronous and continuous response: The response is a JSON object, sent asynchronously to the message broker, with ZeroTier IP `BROKER_IP`
     - `cam_id`: Camera ID
     - `time`: frame time, in seconds
     - `objects`: a list of dicts, containing the detected objects
+
+- `http://<GPU_SERVER_IP>:8000/object-detection/monitor/`: If you need to see the output of the detections, pass the address you want the service to transmit. You can visualise the video with [python-live-video-streaming](https://github.com/jhonata-antunes/python-live-video-streaming) server
+  - Method: POST
+  - Data:
+    - `client_ip`: IP address to transmit the video with detections
+    - `client_port`: port
 
 - `http://<GPU_SERVER_IP>:8000/object-detection/unregister/`: if object detection is no longer necessary or you want to register again to get a new port
   - Method: POST

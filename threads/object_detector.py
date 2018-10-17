@@ -7,8 +7,9 @@ import time
 
 
 class ObjectDetector(threading.Thread):
+    monitor_timeout = 60 * 5
 
-    def __init__(self, vs, detector, messenger, on_finish, debug_ip, debug_port):
+    def __init__(self, vs, detector, messenger, on_finish):
         super().__init__()
         self.vs = vs
         self.detector = detector
@@ -19,11 +20,9 @@ class ObjectDetector(threading.Thread):
         self.fps = 0
         self.callback = on_finish
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        self.debug_ip = debug_ip
-        try:
-            self.debug_port = int(debug_port)
-        except TypeError:
-            self.debug_port = None
+        self.monitor_ip = None
+        self.monitor_port = None
+        self.monitor_start = None
         print('Creating object detector thread with id {}'.format(self.id))
 
     def run(self):
@@ -37,11 +36,14 @@ class ObjectDetector(threading.Thread):
                 self.id = None
                 break
 
+            if (time.time() - self.monitor_start) > self.monitor_timeout:
+                self.monitor_ip, self.monitor_port = None, None
+
             if self.vs.has_new_frame():
                 frame = self.vs.get_frame()
                 objects = self.detector.detect(frame['frame'])
-                if self.debug_ip and self.debug_port:
-                    threading.Thread(target=self.send_detection, args=(frame['frame'], objects)).start()
+                if self.monitor_ip and self.monitor_port:
+                    threading.Thread(target=self._send_detection, args=(frame['frame'], objects)).start()
                 self.fps = 1 / (time.time() - start)
                 start = time.time()
 
@@ -63,7 +65,21 @@ class ObjectDetector(threading.Thread):
     def get_port(self):
         return self.vs.get_port()
 
-    def send_detection(self, frame, objects):
+    def monitor(self, monitor_ip, monitor_port):
+        """
+        Send object detections video to monitor or debug
+        :param monitor_ip: IP address to send detections
+        :param monitor_port: IP port to send detections
+        :return:
+        """
+        self.monitor_start = time.time()
+        self.monitor_ip = monitor_ip
+        try:
+            self.monitor_port = int(monitor_port)
+        except TypeError:
+            self.monitor_port = None
+
+    def _send_detection(self, frame, objects):
         """
         Method to debug detection of person
         :return:
@@ -71,7 +87,7 @@ class ObjectDetector(threading.Thread):
         try:
             for obj in objects:
                 if obj.get('label') == 'person':
-                    frame = draw_box(frame, obj, (0, 255, 0))
+                    frame = _draw_box(frame, obj, (0, 255, 0))
 
             max_size = 65536 - 8  # less 8 bytes of video time
             jpg_quality = 80
@@ -87,12 +103,12 @@ class ObjectDetector(threading.Thread):
             vt = np.array([0], dtype=np.float64)
             data = encoded_img.tobytes() + vt.tobytes()
 
-            self.sock.sendto(data, (self.debug_ip, self.debug_port))
+            self.sock.sendto(data, (self.monitor_ip, self.monitor_port))
         except Exception as ex:
             print(ex)
 
 
-def draw_box(frame, obj, color_bgr, thickness=2):
+def _draw_box(frame, obj, color_bgr, thickness=2):
     """
     Draw a rectangle in an numpy frame
     :param frame: numpy frame
