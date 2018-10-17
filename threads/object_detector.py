@@ -22,7 +22,7 @@ class ObjectDetector(threading.Thread):
         self.debug_ip = debug_ip
         try:
             self.debug_port = int(debug_port)
-        except ValueError:
+        except TypeError:
             self.debug_port = None
         print('Creating object detector thread with id {}'.format(self.id))
 
@@ -44,7 +44,6 @@ class ObjectDetector(threading.Thread):
                     threading.Thread(target=self.send_detection, args=(frame['frame'], objects)).start()
                 self.fps = 1 / (time.time() - start)
                 start = time.time()
-                self.messenger({'cam_id': self.id, 'time': frame['time'], 'objects': objects})
 
     def kill(self):
         self.stop = True
