@@ -47,7 +47,7 @@ def register(request):
         url = cameras_url + '{}/'.format(cam_id)
         try:
             cam_request = requests.get(url, timeout=3)
-        except requests.exceptions.ConnectTimeout:
+        except (requests.exceptions.ConnectTimeout, requests.exceptions.ConnectionError):
             error = 'Users service is not responding. Unable to check camera permissions.'
             mqtt_client.publish(topic="object-detection/logs/error",
                                 payload='Register error. ' + error
