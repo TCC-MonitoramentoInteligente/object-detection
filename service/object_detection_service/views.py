@@ -2,7 +2,6 @@ import base64
 from io import BytesIO
 
 import cv2
-import json
 import os
 import sys
 
@@ -36,28 +35,31 @@ def on_detection_finish(cam_id, timeout):
 
 @csrf_exempt
 def register(request):
+    already_registered = 'Register error. Camera {} is already registered.'
+    not_allowed = 'Register error. Camera {} not allowed.'
+    user_not_responding = 'Register error. Users service is not responding. ' \
+                          'Unable to check camera permission.'
+    success = 'Camera {} was successfully registered'
+
     if request.method == 'POST':
         cam_id = request.POST.get('cam_id')
         if object_detector_threads.get(cam_id) is not None:
             mqtt_client.publish(topic="object-detection/logs/error",
-                                payload='Register error. Camera {} is already registered.'
-                                .format(cam_id))
-            return HttpResponse("Camera {} is already registered".format(cam_id), status=400)
+                                payload=already_registered.format(cam_id))
+            return HttpResponse(already_registered.format(cam_id), status=400)
 
-        url = cameras_url + '{}/'.format(cam_id)
         try:
-            cam_request = requests.get(url, timeout=3)
+            url = cameras_url + '{}/'.format(cam_id)
+            cam_request = requests.get(url, timeout=4)
+            response_id = cam_request.json()['id']
+            if cam_request.status_code != requests.codes.ok or response_id != cam_id:
+                mqtt_client.publish(topic="object-detection/logs/error",
+                                    payload=not_allowed.format(cam_id))
+                return HttpResponse(not_allowed.format(cam_id), status=403)
         except (requests.exceptions.ConnectTimeout, requests.exceptions.ConnectionError):
-            error = 'Users service is not responding. Unable to check camera permissions.'
             mqtt_client.publish(topic="object-detection/logs/error",
-                                payload='Register error. ' + error
-                                .format(cam_id))
-            return HttpResponse(error, status=500)
-        if not cam_request.status_code == requests.codes.ok:
-            mqtt_client.publish(topic="object-detection/logs/error",
-                                payload='Register error. Camera {} not allowed.'
-                                .format(cam_id))
-            return HttpResponse("Camera {} not allowed".format(cam_id), status=403)
+                                payload=user_not_responding.format(cam_id))
+            return HttpResponse(user_not_responding.format(cam_id), status=500)
 
         detector = Detector()
         detector.load_model()
@@ -67,7 +69,7 @@ def register(request):
         object_detector_threads[cam_id] = od
         mqtt_client.publish(topic="object-detection/add", payload=cam_id)
         mqtt_client.publish(topic="object-detection/logs/success",
-                            payload='Camera {} was successfully registered'.format(cam_id))
+                            payload=success.format(cam_id))
         return HttpResponse(od.get_port(), status=200)
     else:
         return HttpResponse("Method not allowed", status=405)
@@ -75,6 +77,10 @@ def register(request):
 
 @csrf_exempt
 def monitor(request):
+    not_found = 'Monitor error. Camera {} not found.'
+    bad_request = 'Monitor error. Invalid address ({}, {}). Port must be an integer.'
+    success = 'Monitor success. Sending video to address ({}, {}).'
+
     if request.method == 'POST':
         cam_id = request.POST.get('cam_id')
         client_ip = request.POST.get('client_ip')
@@ -82,39 +88,38 @@ def monitor(request):
         object_detector = object_detector_threads.get(cam_id)
         if object_detector is None:
             mqtt_client.publish(topic="object-detection/logs/error",
-                                payload='Monitor error. Camera {} not found.'
-                                .format(cam_id))
-            return HttpResponse("Camera {} not found".format(cam_id), status=404)
+                                payload=not_found.format(cam_id))
+            return HttpResponse(not_found.format(cam_id), status=404)
         try:
             client_port = int(client_port)
         except TypeError:
             mqtt_client.publish(topic="object-detection/logs/error",
-                                payload='Monitor error. Bad request to sending video to address ({}, {}).'
-                                .format(client_ip, client_port))
-            return HttpResponse("Port {} must be an integer".format(client_port), status=400)
+                                payload=bad_request.format(client_ip, client_port))
+            return HttpResponse(bad_request.format(client_ip, client_port), status=400)
         object_detector.monitor(client_ip, client_port)
         mqtt_client.publish(topic="object-detection/logs/success",
-                            payload='Monitor success. Sending video to address ({}, {}).'
-                            .format(client_ip, client_port))
-        return HttpResponse(status=200)
+                            payload=success.format(client_ip, client_port))
+        return HttpResponse(success.format(client_ip, client_port), status=200)
     else:
         return HttpResponse("Method not allowed", status=405)
 
 
 @csrf_exempt
 def unregister(request):
+    not_found = 'Unregister error. Camera {} not found.'
+    success = 'Camera {} was successfully unregistered'
+
     if request.method == 'POST':
         cam_id = request.POST.get('cam_id')
         object_detector = object_detector_threads.get(cam_id)
         if object_detector is None:
             mqtt_client.publish(topic="object-detection/logs/error",
-                                payload='Unregister error. Camera {} not found.'
-                                .format(cam_id))
-            return HttpResponse("Camera {} not found".format(cam_id), status=404)
+                                payload=not_found.format(cam_id))
+            return HttpResponse(not_found.format(cam_id), status=404)
         object_detector.kill()
         mqtt_client.publish(topic="object-detection/logs/success",
-                            payload='Camera {} was successfully unregistered'.format(cam_id))
-        return HttpResponse(status=200)
+                            payload=success.format(cam_id))
+        return HttpResponse(success, status=200)
     else:
         return HttpResponse("Method not allowed", status=405)
 
@@ -136,14 +141,16 @@ def status(request):
 
 @csrf_exempt
 def event_print(request):
+    not_found = 'Event print error. Camera {} not found.'
+    success = 'An event print was requested from camera {}'
+
     if request.method == 'GET':
         cam_id = request.GET.get('cam_id')
         object_detector = object_detector_threads.get(cam_id)
         if object_detector is None:
             mqtt_client.publish(topic="object-detection/logs/error",
-                                payload='Event print error. Camera {} not found.'
-                                .format(cam_id))
-            return HttpResponse("Camera {} not found".format(cam_id), status=404)
+                                payload=not_found.format(cam_id))
+            return HttpResponse(not_found.format(cam_id), status=404)
         frame = object_detector.get_frame()
         frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
         pil_frame = Image.fromarray(frame)
@@ -151,7 +158,7 @@ def event_print(request):
         pil_frame.save(buffered, format="JPEG")
         b64 = base64.b64encode(buffered.getvalue())
         mqtt_client.publish(topic="object-detection/logs/success",
-                            payload='An event print was requested from camera {}'.format(cam_id))
+                            payload=success.format(cam_id))
         return HttpResponse(b64, status=200)
     else:
         return HttpResponse("Method not allowed", status=405)
