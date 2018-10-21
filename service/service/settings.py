@@ -27,9 +27,9 @@ SECRET_KEY = '1q=hjx@d3#+=39##^x830fpe*1+s(xt99jsw*z^ba+j#+82ryw'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-GPU_SERVER_IP = '10.242.128.252'
-USERS_IP, USERS_PORT = '10.242.103.152', 8080
-BROKER_IP = '10.242.103.152'
+GPU_SERVER_IP = '10.1.0.2'
+USERS_IP, USERS_PORT = '10.1.0.3', 8080
+BROKER_IP = '10.1.0.3'
 
 ALLOWED_HOSTS = [
     GPU_SERVER_IP,
