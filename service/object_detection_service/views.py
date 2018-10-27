@@ -4,6 +4,7 @@ from io import BytesIO
 import cv2
 import os
 import sys
+import json
 
 import requests
 from PIL import Image
