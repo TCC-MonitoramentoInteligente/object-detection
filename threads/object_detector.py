@@ -47,6 +47,7 @@ class ObjectDetector(threading.Thread):
                     threading.Thread(target=self._send_detection, args=(frame['frame'], objects)).start()
                 self.fps = 1 / (time.time() - start)
                 start = time.time()
+                self.messenger({'cam_id': self.id, 'time': frame['time'], 'objects': objects})
 
     def kill(self):
         self.stop = True
