@@ -1,4 +1,4 @@
-PIL
+Pillow
 django
 pandas
 numpy
