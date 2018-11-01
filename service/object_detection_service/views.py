@@ -52,7 +52,7 @@ def register(request):
         try:
             url = cameras_url + '{}/'.format(cam_id)
             cam_request = requests.get(url, timeout=4)
-            response_id = cam_request.json()['id']
+            response_id = cam_request.json().get('id')
             if cam_request.status_code != requests.codes.ok or response_id != cam_id:
                 mqtt_client.publish(topic="object-detection/logs/error",
                                     payload=not_allowed.format(cam_id))
