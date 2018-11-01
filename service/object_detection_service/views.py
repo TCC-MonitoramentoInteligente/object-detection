@@ -93,7 +93,7 @@ def monitor(request):
             return HttpResponse(not_found.format(cam_id), status=404)
         try:
             client_port = int(client_port)
-        except TypeError:
+        except ValueError:
             mqtt_client.publish(topic="object-detection/logs/error",
                                 payload=bad_request.format(client_ip, client_port))
             return HttpResponse(bad_request.format(client_ip, client_port), status=400)
