@@ -78,7 +78,7 @@ class ObjectDetector(threading.Thread):
         self.monitor_ip = monitor_ip
         try:
             self.monitor_port = int(monitor_port)
-        except TypeError:
+        except ValueError:
             self.monitor_port = None
 
     def _send_detection(self, frame, objects):
