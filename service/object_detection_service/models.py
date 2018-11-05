@@ -2,7 +2,8 @@ import paho.mqtt.client as mqtt
 
 from service import settings
 
-cameras_url = 'http://{}:{}/cameras/'.format(settings.USERS_IP, settings.USERS_PORT)
+cameras_url = 'http://{}:{}/cameras/'\
+    .format(settings.USERS_SERVICE_IP, settings.USERS_SERVICE_PORT)
 
 object_detector_threads = {}
 

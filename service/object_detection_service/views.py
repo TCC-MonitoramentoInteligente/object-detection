@@ -64,7 +64,7 @@ def register(request):
 
         detector = Detector()
         detector.load_model()
-        vs = VideoStreaming(settings.GPU_SERVER_IP, cam_id)
+        vs = VideoStreaming(settings.OBJECT_DETECTION_SERVICE_IP, cam_id)
         od = ObjectDetector(vs, detector, messenger, on_detection_finish)
         od.start()
         object_detector_threads[cam_id] = od
