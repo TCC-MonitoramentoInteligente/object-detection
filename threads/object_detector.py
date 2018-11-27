@@ -38,6 +38,7 @@ class ObjectDetector(threading.Thread):
 
             if self.monitor_start:
                 if (time.time() - self.monitor_start) > self.monitor_timeout:
+                    self.monitor_start = None
                     self.monitor_ip, self.monitor_port = None, None
 
             if self.vs.has_new_frame():
