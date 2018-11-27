@@ -45,8 +45,7 @@ class ObjectDetector(threading.Thread):
                 frame = self.vs.get_frame()
                 objects = self.detector.detect(frame['frame'])
                 if self.monitor_ip and self.monitor_port:
-                    self._send_detection(frame['frame'], objects)
-                    # threading.Thread(target=self._send_detection, args=(frame['frame'], objects)).start()
+                    threading.Thread(target=self._send_detection, args=(frame['frame'], objects)).start()
                 self.fps = 1 / (time.time() - start)
                 start = time.time()
                 self.messenger({'cam_id': self.id, 'time': frame['time'], 'objects': objects})
