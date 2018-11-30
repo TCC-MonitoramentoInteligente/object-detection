@@ -8,5 +8,10 @@ cameras_url = 'http://{}:{}/cameras/'\
 object_detector_threads = {}
 
 mqtt_client = mqtt.Client()
-mqtt_client.connect(settings.BROKER_IP)
+try:
+    mqtt_client.connect(settings.BROKER_IP)
+except (OSError, ConnectionRefusedError):
+    print('Could not connect to broker. Check if it is running and try again.')
+    exit(0)
+
 mqtt_client.loop_start()
