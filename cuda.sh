@@ -15,3 +15,4 @@ sudo apt-get update
 sudo apt-get install cuda=9.0.176-1
 sudo apt-get install libcudnn7-dev
 sudo apt-get install libnccl-dev
+sudo rm -rf *.deb
