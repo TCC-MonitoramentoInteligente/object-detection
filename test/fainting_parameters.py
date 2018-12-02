@@ -24,7 +24,7 @@ def arg_parse():
 
 def has_one_person(obj_list, fn):
     if len(obj_list) == 1:
-        if obj_list[0].label == 'person':
+        if obj_list[0]['label'] == 'person':
             return True
     print('File "{}" needs to have exactly one person.'.format(fn))
     return False
@@ -67,7 +67,7 @@ def main(args):
             print()
             break
 
-    with open('alpha_beta.csv', 'w') as csv_file:
+    with open('test/alpha_beta.csv', 'w') as csv_file:
         csv_file.write(csv)
 
 
