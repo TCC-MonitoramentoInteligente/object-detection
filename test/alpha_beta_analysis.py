@@ -27,7 +27,7 @@ def arg_parse():
 
 def main(args):
     df = pandas.read_csv(args.csv, sep=';')
-    print(df.describe(exclude='video'))
+    print(df.describe(exclude='file'))
 
 
 if __name__ == '__main__':
