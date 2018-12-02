@@ -25,7 +25,7 @@ From `object-detection/`, do:
 There is a simple script to test if the detector module is working, to verify that the environment has been correctly configured. Run `$ python3 test/detector_test.py --image /path/to/image`. You should see a list with all the detected objects.
 
 ## API
-- `http://<GPU_SERVER_IP>:8000/object-detection/register/`: to use the service, you need to request a new thread to process your video streaming. The response is a free port number where you should transmit the video streaming `(GPU_SERVER_IP, port)`
+- `http://<GPU_SERVER_IP>:8030/object-detection/register/`: to use the service, you need to request a new thread to process your video streaming. The response is a free port number where you should transmit the video streaming `(GPU_SERVER_IP, port)`
   - Method: POST
   - Data:
     - `cam_id`: Camera ID
@@ -35,29 +35,30 @@ There is a simple script to test if the detector module is working, to verify th
     - `time`: frame time, in seconds
     - `objects`: a list of dicts, containing the detected objects
 
-- `http://<GPU_SERVER_IP>:8000/object-detection/monitor/`: If you need to see the output of the detections, pass the address you want the service to transmit. You can visualise the video with [python-live-video-streaming](https://github.com/jhonata-antunes/python-live-video-streaming) server
+- `http://<GPU_SERVER_IP>:8030/object-detection/monitor/`: If you need to see the output of the detections, pass the address you want the service to transmit. You can visualise the video with [python-live-video-streaming](https://github.com/jhonata-antunes/python-live-video-streaming) server
   - Method: POST
   - Data:
+    - `cam_id`: Camera ID
     - `client_ip`: IP address to transmit the video with detections
     - `client_port`: port
 
-- `http://<GPU_SERVER_IP>:8000/object-detection/unregister/`: if object detection is no longer necessary or you want to register again to get a new port
+- `http://<GPU_SERVER_IP>:8030/object-detection/unregister/`: if object detection is no longer necessary or you want to register again to get a new port
   - Method: POST
   - Data:
     - `cam_id`: Camera ID
 
-- `http://<GPU_SERVER_IP>:8000/object-detection/event_print/`: return a print of the video streaming
+- `http://<GPU_SERVER_IP>:8030/object-detection/event_print/`: return a print of the video streaming
   - Method: GET
   - Parameters:
     - `cam_id`: Camera ID
   - Response: a base64 encoded image print of the video streaming
 
-- `http://<GPU_SERVER_IP>:8000/object-detection/status/`: processing status
+- `http://<GPU_SERVER_IP>:8030/object-detection/status/`: processing status
   - Method: GET
   - Response: a list with the status of all videos streaming being processed
 
 ## Run
-`$ python3 service/manage.py runserver <GPU_SERVER_IP>:8000`
+`$ python3 service/manage.py runserver <GPU_SERVER_IP>:8030`
 
 ## Usage
 1. Register and receive a free port
