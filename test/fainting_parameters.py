@@ -39,7 +39,7 @@ def main(args):
     while True:
         img_counter += 1
         file_name = 'v' + str(img_counter) + '{}.png'
-        file_path = args.paht + '/' + file_name
+        file_path = args.path + '/' + file_name
         try:
             normal_img = np.asarray(Image.open(file_path.format('n')))
             event_img = np.asarray(Image.open(file_path.format('e')))
