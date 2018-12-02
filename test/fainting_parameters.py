@@ -10,6 +10,17 @@ sys.path.append('{}/..'.format(os.path.dirname(os.path.abspath(__file__))))
 from detector import Detector
 
 
+class Colors:
+    HEADER = '\033[95m'
+    OKBLUE = '\033[94m'
+    OKGREEN = '\033[92m'
+    WARNING = '\033[93m'
+    FAIL = '\033[91m'
+    ENDC = '\033[0m'
+    BOLD = '\033[1m'
+    UNDERLINE = '\033[4m'
+
+
 def arg_parse():
     """
     Parse arguments
@@ -26,7 +37,7 @@ def has_one_person(obj_list, fn):
     if len(obj_list) == 1:
         if obj_list[0]['label'] == 'person':
             return True
-    print('File "{}" needs to have exactly one person.'.format(fn))
+    print(Colors.FAIL + 'File "{}" needs to have exactly one person.'.format(fn) + Colors.ENDC)
     return False
 
 
@@ -61,7 +72,7 @@ def main(args):
             alpha = event_person['height'] / event_person['width']
             beta = event_person['height'] / hh
 
-            csv += '{};{};{}\n'.format('v' + str(img_counter), alpha, beta)
+            csv += '{}; {}; {}\n'.format('v' + str(img_counter), alpha, beta)
 
         except FileNotFoundError:
             print()
