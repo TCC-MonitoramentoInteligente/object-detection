@@ -27,7 +27,8 @@ def arg_parse():
 
 def main(args):
     df = pandas.read_csv(args.csv, sep=';')
-    print(df.describe(exclude='file'))
+    df.drop(columns=['file'])
+    print(df.describe())
 
 
 if __name__ == '__main__':
